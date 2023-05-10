@@ -1,44 +1,11 @@
+//TRABALHO DE SISTEMAS DIGITAIS EMbarcados
+//Alunos: Nicolas Cechinel Rosa e Augusto Scarduelli Prudencio 
+
+
+
+
+
 #include "memoria.cpp"
-
-void removeContatoPorTelefone()
-{
-	printf("Entre com o telefone:\n"); // pede o telefone
-	char telefone[14]; // telefone
-	serial.readString((uint8_t*) &telefone, 14); // le o telefone
-	printf("telefone = %s\n",telefone); // imprime o telefone
-
-	bool hasEnded = false; // variavel temporaria
-	for(uint8_t i=0;i<14;i++) // salva os bytes
-	{
-		if (telefone[i] == 0 || telefone[i] == '\n') hasEnded = true; // se chegou ao fim, para
-		if (hasEnded) {telefone[i] = '\0';continue;} // se chegou ao fim, preenche com espacos
-	}
-
-	header cabecalho; // cabecalho
-	cabecalho = leCabecalho(); // le o cabecalho
-	bool hasFound = false; // variavel temporaria
-	for(int i=0; i<cabecalho.qtdRegistros; i++)
-	{
-		if(hasFound) // se achou
-		{
-			for(int a=0;a<64;a++) // para cada byte do registro
-			{
-				fazEscrita(4+a+(i-1)*64,fazLeitura(4+a+i*64)); // copia o byte
-			}
-			cabecalho.qtdRegistros--; // diminui a quantidade de registros
-			salvaCabecalho(cabecalho); // escreve o cabecalho
-		}
-		else{
-			char telefoneRegistro[14]; // telefone do registro
-			for (int a=0;a<14;a++) // para cada byte do telefone
-			{
-				telefoneRegistro[a] = fazLeitura(20+4+a+i*64); // le o byte
-			}
-			if(strcmp(telefone,telefoneRegistro) == 0) {hasFound = true; // achou} // se o telefone do registro e igual ao telefone
-		}
-	}
-}
-}
 
 
 void app_main()
@@ -52,7 +19,7 @@ void app_main()
 	
 	while(1){
 		//menu da lista telefonica
-		printf("0 - adicionar\n"); // opcao 0
+		printf("\n0 - adicionar\n"); // opcao 0
 		printf("1 - listar\n"); // opcao 1
 		printf("2 - pesquisar por nome\n"); // opcao 2
 		printf("3 - pesquisar por telefone\n"); // opcao 3

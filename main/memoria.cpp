@@ -97,7 +97,7 @@ void salvaString(char * st, uint16_t endereco_base, uint8_t tamanho) // salva um
 	for(uint8_t i=0;i<tamanho;i++) // salva os bytes
 	{
 		if (st[i] == '\0' || st[i] == '\n') hasEnded = true; // se chegou ao fim, para
-		if (hasEnded) {fazEscrita(endereco_base+i,'\0');continue;} // se chegou ao fim, preenche com espacos
+		if (hasEnded) {fazEscrita(endereco_base+i, '\0');continue;} // se chegou ao fim, preenche com espacos
 		fazEscrita(endereco_base+i,st[i]); // salva o byte
 	}
 }
@@ -119,21 +119,28 @@ void adicionaUmRegistro(){
 	salvaString(contato.telefone,20 + 4 + cabecalho.qtdRegistros*64, 14); // salva o telefone
 	salvaString(contato.endereco,34 + 4 + cabecalho.qtdRegistros*64, 30); // salva o endereco
 	
-	printf("nome\n"); // imprime o nome
-	for (int a=0;a<20;a++) // para cada byte do nome
-	{
-		printf("%c",fazLeitura(4+a+cabecalho.qtdRegistros*64)); // imprime o byte
-	}
-	printf("telefone\n"); // imprime o telefone
-	for (int a=0;a<14;a++) // para cada byte do telefone
-	{
-		printf("%c",fazLeitura(20+4+a+cabecalho.qtdRegistros*64)); // imprime o byte
-	}
-	printf("endereco\n"); // imprime o endereco
-	for (int a=0;a<30;a++) // para cada byte do endereco
-	{
-		printf("%c",fazLeitura(34+4+a+cabecalho.qtdRegistros*64)); // imprime o byte
-	}
+    printf("\nnome:\n"); // imprime o nome
+    for (int a=0;a<20;a++) // para cada byte do nome
+    {
+        char c = fazLeitura(4+a+cabecalho.qtdRegistros*64);
+        if (c == '\0' || c == '\n') break;
+        printf("%c", c); // imprime o byte
+    }
+    printf("\ntelefone:\n"); // imprime o telefone
+    for (int a=0;a<14;a++) // para cada byte do telefone
+    {
+        char c = fazLeitura(24+a+cabecalho.qtdRegistros*64);
+        if (c == '\0' || c == '\n') break;
+        printf("%c", c); // imprime o byte
+    }
+    printf("\nendereco:\n"); // imprime o endereco
+    for (int a=0;a<30;a++) // para cada byte do endereco
+    {
+        char c = fazLeitura(38+a+cabecalho.qtdRegistros*64);
+        if (c == '\0' || c == '\n') break;
+        printf("%c", c); // imprime o byte
+    }
+    printf("\n-------------------------------------------\n");
 	cabecalho.qtdRegistros++; // incrementa a quantidade de registros
 	// cabecalho.qtdMAX = 100; 
 	salvaCabecalho(cabecalho); // salva o cabecalho
@@ -153,28 +160,29 @@ void listaRegistros(){
 	{
 		for (size_t i = 0; i < cabecalho.qtdRegistros; i++) // para cada registro
 		{
-			printf("Registro %d\n",i); // imprime o numero do registro
-			printf("nome\n"); // imprime o nome
+			printf("\nRegistro %d\n",i); // imprime o numero do registro
+			printf("nome:\n"); // imprime o nome
 			for (int a=0;a<20;a++) // para cada byte do nome
 			{
-				printf("%c",fazLeitura(4+a+i*64)); // imprime o byte
+                char c = fazLeitura(4+a+i*64);
+                if (c == '\0' || c == '\n') break;
+				printf("%c", c); // imprime o byte
 			}
-			printf("telefone\n"); // imprime o telefone
+			printf("\ntelefone:\n"); // imprime o telefone
 			for (int a=0;a<14;a++) // para cada byte do telefone
 			{
-				printf("%c", fazLeitura(20+4+a+i*64)); // imprime o byte
+                char c = fazLeitura(24+a+i*64);
+                if (c == '\0' || c == '\n') break;
+				printf("%c", c); // imprime o byte
 			}
-			{
-				printf("%c", fazLeitura(24+a+i*64)); // imprime o byte
-			}
-			printf("endereco\n"); // imprime o endereco
+			printf("\nendereco:\n"); // imprime o endereco
 			for (int a=0;a<30;a++) // para cada byte do endereco
 			{
-				printf("%c",fazLeitura(34+4+a+i*64)); // imprime o byte
+                char c = fazLeitura(38+a+i*64);
+                if (c == '\0' || c == '\n') break;
+				printf("%c", c); // imprime o byte
 			}
-			{
-				printf("%c",fazLeitura(38+a+i*64)); // imprime o byte
-			}
+            printf("\n-------------------------------------------\n");
 		}
 	}
 	else {printf("Nao ha registros\n");} // se nao tem registros
@@ -197,7 +205,7 @@ void pesquisaContatoPorNome(){
 	bool hasEnded = false; // variavel temporaria
 	for(uint8_t i=0;i<20;i++) // salva os bytes
 	{
-		if (nome[i] == 0 || nome[i] == '\n') hasEnded = true; // se chegou ao fim, para
+		if (nome[i] == '\0' || nome[i] == '\n') hasEnded = true; // se chegou ao fim, para
 		if (hasEnded) {nome[i] = '\0';continue;} // se chegou ao fim, preenche com espacos
 	}
 
@@ -217,22 +225,29 @@ void pesquisaContatoPorNome(){
 
 			if(strcmp(nomeRegistro,nome) == 0) // se o nome do registro e igual ao nome pesquisado
 			{
-				printf("Registro %d\n",i); // imprime o numero do registro
-				printf("nome\n"); // imprime o nome
-				for (int a=0;a<20;a++) // para cada byte do nome
-				{
-					printf("%c",fazLeitura(4+a+i*64)); // imprime o byte
-				}
-				printf("telefone\n"); // imprime o telefone
-				for (int a=0;a<14;a++) // para cada byte do telefone
-				{
-					printf("%c", fazLeitura(20+4+a+i*64)); // imprime o byte
-				}
-				printf("endereco\n"); // imprime o endereco
-				for (int a=0;a<30;a++) // para cada byte do endereco
-				{
-					printf("%c", fazLeitura(34+4+a+i*64)); // imprime o byte
-				}
+				printf("\nRegistro %d\n",i); // imprime o numero do registro
+                printf("nome:\n"); // imprime o nome
+                for (int a=0;a<20;a++) // para cada byte do nome
+                {
+                    char c = fazLeitura(4+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\ntelefone:\n"); // imprime o telefone
+                for (int a=0;a<14;a++) // para cada byte do telefone
+                {
+                    char c = fazLeitura(24+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\nendereco:\n"); // imprime o endereco
+                for (int a=0;a<30;a++) // para cada byte do endereco
+                {
+                    char c = fazLeitura(38+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\n-------------------------------------------\n");
 			}
 		}
 	}
@@ -247,7 +262,7 @@ void pesquisaContatoPorTelefone(){
 	bool hasEnded = false; // variavel temporaria
 	for(uint8_t i=0;i<14;i++) // salva os bytes
 	{
-		if (telefone[i] == 0 || telefone[i] == '\n') hasEnded = true; // se chegou ao fim, para
+		if (telefone[i] == '\0' || telefone[i] == '\n') hasEnded = true; // se chegou ao fim, para
 		if (hasEnded) {telefone[i] = '\0';continue;} // se chegou ao fim, preenche com espacos
 	}
 
@@ -264,23 +279,70 @@ void pesquisaContatoPorTelefone(){
 			}
 			if(strcmp(telefone,telefoneRegistro) == 0) // se o telefone do registro e igual ao telefone
 			{
-				printf("Registro %d\n",i); // imprime o numero do registro
-				printf("nome\n"); // imprime o nome
-				for (int a=0;a<20;a++) // para cada byte do nome
-				{
-					printf("%c",fazLeitura(4+a+i*64)); // imprime o byte
-				}
-				printf("telefone\n"); // imprime o telefone
-				for (int a=0;a<14;a++) // para cada byte do telefone
-				{
-					printf("%c", fazLeitura(20+4+a+i*64)); // imprime o byte
-				}
-				printf("endereco\n"); // imprime o endereco
-				for (int a=0;a<30;a++) // para cada byte do endereco
-				{
-					printf("%c",fazLeitura(34+4+a+i*64)); // imprime o byte
-				}
+				printf("\nRegistro %d\n",i); // imprime o numero do registro
+                printf("nome:\n"); // imprime o nome
+                for (int a=0;a<20;a++) // para cada byte do nome
+                {
+                    char c = fazLeitura(4+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\ntelefone:\n"); // imprime o telefone
+                for (int a=0;a<14;a++) // para cada byte do telefone
+                {
+                    char c = fazLeitura(24+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\nendereco:\n"); // imprime o endereco
+                for (int a=0;a<30;a++) // para cada byte do endereco
+                {
+                    char c = fazLeitura(38+a+i*64);
+                    if (c == '\0' || c == '\n') break;
+                    printf("%c", c); // imprime o byte
+                }
+                printf("\n-------------------------------------------\n");
 			}
 		}
 	}
+}
+
+void removeContatoPorTelefone()
+{
+	printf("Entre com o telefone:\n"); // pede o telefone
+	char telefone[14]; // telefone
+	serial.readString((uint8_t*) &telefone, 14); // le o telefone
+	printf("telefone = %s\n",telefone); // imprime o telefone
+
+	bool hasEnded = false; // variavel temporaria
+	for(uint8_t i=0;i<14;i++) // salva os bytes
+	{
+		if (telefone[i] == '\0' || telefone[i] == '\n') hasEnded = true; // se chegou ao fim, para
+		if (hasEnded) {telefone[i] = '\0';continue;} // se chegou ao fim, preenche com espacos
+	}
+
+	header cabecalho; // cabecalho
+	cabecalho = leCabecalho(); // le o cabecalho
+	bool hasFound = false; // variavel temporaria
+	for(int i=0; i<cabecalho.qtdRegistros; i++)
+	{
+		if(hasFound) // se achou
+		{
+			for(int a=0;a<64;a++) // para cada byte do registro
+			{
+				fazEscrita(4+a+(i-1)*64,fazLeitura(4+a+i*64)); // copia o byte
+			}
+			cabecalho.qtdRegistros--; // diminui a quantidade de registros
+			salvaCabecalho(cabecalho); // escreve o cabecalho
+		}
+		else{
+			char telefoneRegistro[14]; // telefone do registro
+			for (int a=0;a<14;a++) // para cada byte do telefone
+			{
+				telefoneRegistro[a] = fazLeitura(20+4+a+i*64); // le o byte
+			}
+			if(strcmp(telefone,telefoneRegistro) == 0) {hasFound = true; // achou} // se o telefone do registro e igual ao telefone
+		}
+	}
+}
 }
