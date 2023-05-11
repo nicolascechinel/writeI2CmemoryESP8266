@@ -7,3 +7,8 @@ com ou equivalente). A agenda embarcada armazena os registros num chip de memór
 A agenda telefônica utiliza registros compostos por apenas 3 campos: Nome (string de 20 caracteres),
 telefone (string de 14 caracteres), endereco (string de 30 caracteres). Cada registro possui um tamanho fixo
 de 64 bytes.
+## Autores
+
+- [@nicolascechinel](https://www.github.com/nicolascechinel)
+- [@augusto_prudencio](https://www.github.com/augusto_prudencio)
+
